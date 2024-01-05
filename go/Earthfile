@@ -1,0 +1,5 @@
+VERSION --use-function-keyword 0.7
+
+FROM golang:1.21
+
+# TODO: goreleaser, golangci-lint, gofumpt, goimports

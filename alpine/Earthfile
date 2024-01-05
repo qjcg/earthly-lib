@@ -1,0 +1,8 @@
+VERSION --use-function-keyword 0.7
+
+FROM alpine:3.19
+
+PACKAGES:
+    FUNCTION
+    ARG packages = curl
+    RUN apk add --no-cache $packages
