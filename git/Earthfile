@@ -1,6 +1,6 @@
 VERSION --use-function-keyword 0.7
 
-GIT_CONFIG:
+CONFIG:
     FUNCTION
     ARG name = "Earthly CI"
     ARG email = "earthly.ci@example.com"
@@ -8,45 +8,45 @@ GIT_CONFIG:
         git config --global user.name $name \
         && git config --global user.email $email
 
-GIT_TAG:
+TAG:
     FUNCTION
     ARG tag = $(svu next)
     RUN git tag -am $tag $tag || echo Tag already exists: $tag
 
-GIT_PUSH:
+PUSH:
     FUNCTION
     ARG remote = origin
     ARG refs = main $(svu current)
     RUN git push --atomic $remote $refs
 
-GIT_TAG_PUSH:
+TAG_PUSH:
     FUNCTION
-    DO +GIT_TAG
-    DO +GIT_PUSH
+    DO +TAG
+    DO +PUSH
 
 git-base:
     FROM caarlos0/svu:v1.12.0
-    DO +GIT_CONFIG
+    DO +CONFIG
 
-+git-tag:
+tag:
     FROM +git-base
-    DO +GIT_TAG
+    DO +TAG
 
-+git-tag-local:
+tag-local:
     LOCALLY
-    DO +GIT_TAG
+    DO +TAG
 
-+git-push:
+push:
     FROM +git-base
-    DO +GIT_PUSH
+    DO +PUSH
 
-+git-push-local:
+push-local:
     LOCALLY
-    DO +GIT_PUSH
+    DO +PUSH
 
-+git-tag-push:
+tag-push:
     FROM +git-base
 
-+git-tag-push-local:
+tag-push-local:
     LOCALLY
-    DO +GIT_TAG_PUSH
+    DO +TAG_PUSH
