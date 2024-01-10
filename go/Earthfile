@@ -1,5 +1,17 @@
+# TODO: goreleaser, gofumpt, goimports
+
 VERSION --use-function-keyword 0.7
 
-FROM golang:1.21
+SETUP:
+    FUNCTION
+    WORKDIR /work
+    COPY . .
 
-# TODO: goreleaser, golangci-lint, gofumpt, goimports
+LINT:
+    FUNCTION
+    FROM golangci/golangci-lint:v1.55
+    DO +SETUP
+    RUN golangci-lint run --enable gofumpt,revive
+
+release:
+    FROM goreleaser/goreleaser:v1.23.0
