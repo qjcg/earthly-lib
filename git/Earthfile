@@ -17,7 +17,7 @@ PUSH:
     FUNCTION
     ARG remote = origin
     ARG refs = main $(svu current)
-    RUN git push --atomic $remote $refs
+    RUN --push git push --atomic $remote $refs
 
 TAG_PUSH:
     FUNCTION
