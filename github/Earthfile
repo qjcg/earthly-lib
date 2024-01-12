@@ -1,0 +1,12 @@
+VERSION --use-function-keyword 0.7
+
+PR:
+    FUNCTION
+    ARG GH_HOST = github.com
+    ARG GH_TOKEN = ""
+    RUN \
+        --push \
+        --secret GH_TOKEN \
+        gh pr create \
+           --title "feat: Automated PR from Earthly" \
+           --body "This is an automated PR. Update $SERVICE_NAME to ${{ github.ref_name }}"
