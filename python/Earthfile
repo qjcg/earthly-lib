@@ -1,5 +1,15 @@
 VERSION --use-function-keyword 0.7
 
-FROM python:3.12
+base-poetry:
+    FROM python:3-slim-bookworm
+    ARG version = 1.7.1
+    ENV PATH = /root/.local/bin:$PATH
+    ENV POETRY_VIRTUALENVS_CREATE = false
+    WORKDIR /work
+    RUN apt update && apt install -y curl
+    RUN curl -sSL https://install.python-poetry.org | POETRY_VERSION=$version python3 -
 
-# TODO: poetry
+test:
+    FROM +base-poetry
+    RUN poetry init --no-interaction
+    RUN poetry add requests
