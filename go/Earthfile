@@ -1,17 +1,40 @@
-# TODO: goreleaser, gofumpt, goimports
+# TODO: goimports
 
 VERSION --use-function-keyword 0.7
 
-SETUP:
-    FUNCTION
-    WORKDIR /work
-    COPY . .
-
 LINT:
     FUNCTION
-    FROM golangci/golangci-lint:v1.55
-    DO +SETUP
-    RUN golangci-lint run --enable gofumpt,revive
+    ARG linters = gofumpt,goimports,revive
+    RUN --secret GH_TOKEN golangci-lint run --enable $linters
 
-release:
+deps-lint:
+    FROM golangci/golangci-lint:v1.55
+    SAVE ARTIFACT /usr/bin/golangci-lint
+
+test-lint:
+    FROM golang:1.21-alpine
+    WORKDIR /work
+    COPY +deps-lint/golangci-lint /usr/local/bin/
+    ARG repo_url = https://github.com/qjcg/horeb
+    GIT CLONE $repo_url .
+    DO +LINT
+
+RELEASE:
+    FUNCTION
     FROM goreleaser/goreleaser:v1.23.0
+    WORKDIR /work
+
+    ARG repo_url = ""
+    ARG branch = main
+    IF [ $repo_url != "" ]
+       GIT CLONE --branch $branch $repo_url .
+    ELSE
+       COPY . .
+    END
+
+    ARG args = --clean --snapshot
+    RUN goreleaser build $args
+    SAVE ARTIFACT build
+
+test-release:
+    DO +RELEASE --repo_url https://github.com/qjcg/horeb
