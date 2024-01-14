@@ -23,18 +23,19 @@ RELEASE:
     FUNCTION
     FROM goreleaser/goreleaser:v1.23.0
     WORKDIR /work
+    RUN apk add --no-cache upx
 
     ARG repo_url = ""
     ARG branch = main
     IF [ $repo_url != "" ]
-       GIT CLONE --branch $branch $repo_url .
+       RUN git clone --branch $branch $repo_url .
     ELSE
        COPY . .
     END
 
-    ARG args = --clean --snapshot
-    RUN goreleaser build $args
-    SAVE ARTIFACT build
+    ARG args = --clean --snapshot --skip docker
+    RUN --secret GITHUB_TOKEN=GH_TOKEN goreleaser release $args
+    SAVE ARTIFACT dist
 
 test-release:
     DO +RELEASE --repo_url https://github.com/qjcg/horeb
