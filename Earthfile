@@ -1,4 +1,4 @@
-VERSION --use-function-keyword 0.7
+VERSION 0.7
 
 IMPORT ./git
 

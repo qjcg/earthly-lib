@@ -3,7 +3,6 @@ VERSION --use-function-keyword 0.7
 PR:
     FUNCTION
     ARG GH_HOST = github.com
-    ARG GH_TOKEN = ""
     RUN \
         --push \
         --secret GH_TOKEN \
