@@ -6,6 +6,7 @@ LINT:
     FUNCTION
     FROM golangci/golangci-lint:v1.55
     ARG linters = gofumpt,goimports,revive
+    COPY . .
     RUN --secret GH_TOKEN golangci-lint run --enable $linters
 
 deps-lint:
