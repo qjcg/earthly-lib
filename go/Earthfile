@@ -6,6 +6,7 @@ LINT:
     FUNCTION
     FROM golangci/golangci-lint:v1.55
     WORKDIR /work
+    ENV GOTOOLCHAIN = auto
     ARG linters = gofumpt,goimports,revive
     COPY . .
     RUN --secret GH_TOKEN golangci-lint run --enable $linters
