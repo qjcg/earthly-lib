@@ -1,4 +1,4 @@
-VERSION --use-function-keyword 0.7
+VERSION 0.8
 
 PR:
     FUNCTION
@@ -9,3 +9,26 @@ PR:
         gh pr create \
            --title "feat: Automated PR from Earthly" \
            --body "This is an automated PR. Update $SERVICE_NAME to ${{ github.ref_name }}"
+
+deps-gh:
+    FROM golang:1.21-alpine
+    ENV CGO_ENABLED=0
+    RUN go install github.com/cli/cli/v2/cmd/gh@v2.42.0
+    SAVE ARTIFACT /go/bin/gh
+
+deps-svu:
+    FROM caarlos0/svu:v1.12.0
+    SAVE ARTIFACT /usr/bin/svu
+
+# gh-release creates a new GitHub release from the provided git ref
+gh-release:
+    FROM golang:1.21-alpine
+    WORKDIR /work
+    COPY +deps-svu/svu +deps-gh/gh /usr/local/bin/
+    COPY . .
+    RUN apk add --no-cache git
+
+    ARG repo = qjcg/nix
+    ARG args = --repo $repo --generate-notes --draft
+    ARG ref = $(svu current)
+    RUN --push --secret GH_TOKEN gh release create $ref $args

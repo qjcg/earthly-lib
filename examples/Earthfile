@@ -1,4 +1,4 @@
-VERSION --use-function-keyword 0.7
+VERSION 0.8
 
 # build-all-platforms is a multiplatform build example
 # NOTE May be very slow!
@@ -14,3 +14,9 @@ build:
     RUN go build -o /go/bin/hello main.go
     ENTRYPOINT ["/go/bin/hello"]
     SAVE IMAGE --push $name:$tag
+
+steampipe:
+    FROM turbot/steampipe:0.21.3
+    RUN steampipe plugin install hackernews
+    COPY query.sql .
+    RUN steampipe query query.sql
