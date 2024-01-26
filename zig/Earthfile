@@ -1,0 +1,11 @@
+VERSION 0.8
+
+deps:
+    FROM alpine:edge
+    RUN apk add zig --no-cache --repository=https://dl-cdn.alpinelinux.org/alpine/edge/testing/
+
+dev:
+    FROM +deps
+    WORKDIR /work
+    RUN apk add --no-cache bash jq tmux vim
+    RUN --interactive /bin/bash
