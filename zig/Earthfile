@@ -2,7 +2,8 @@ VERSION 0.8
 
 deps:
     FROM alpine:edge
-    RUN apk add zig --no-cache --repository=https://dl-cdn.alpinelinux.org/alpine/edge/testing/
+    ARG version = 0.11.0-r3
+    RUN apk add --no-cache zig=$version --repository=https://dl-cdn.alpinelinux.org/alpine/edge/testing/
 
 dev:
     FROM +deps
