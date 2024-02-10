@@ -24,8 +24,11 @@ base-rye:
 	RUN rye self completion > ~/.local/share/bash-completion/completions/rye.bash
 
 dev-rye:
-    FROM +base-rye
+    FUNCTION
+    ARG rye_version = 0.22.0
+    BUILD +base-rye --rye_version=$rye_version
     RUN apt install -y bash-completion vim
+    COPY . .
     RUN --interactive /bin/bash --login
 
 dev:
