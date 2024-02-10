@@ -29,7 +29,6 @@ DEV_RYE:
     FROM +base-rye --rye_version=$rye_version
     RUN apt install -y bash-completion less tree vim
     COPY . .
-    RUN --interactive /bin/bash --login
 
 dev:
     FROM +conda
