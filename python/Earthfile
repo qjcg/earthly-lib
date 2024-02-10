@@ -26,7 +26,7 @@ base-rye:
 DEV_RYE:
     FUNCTION
     ARG rye_version = 0.22.0
-    BUILD +base-rye --rye_version=$rye_version
+    FROM +base-rye --rye_version=$rye_version
     RUN apt install -y bash-completion vim
     COPY . .
     RUN --interactive /bin/bash --login
