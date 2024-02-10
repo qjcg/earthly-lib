@@ -9,6 +9,34 @@ base-poetry:
     RUN apt update && apt install -y curl
     RUN curl -sSL https://install.python-poetry.org | POETRY_VERSION=$version python3 -
 
+conda:
+    FROM continuumio/miniconda3:23.10.0-1
+
+base-rye:
+	FROM debian:bookworm
+	WORKDIR /work
+	ENV PATH = /root/.rye/shims:$PATH
+	ARG rye_version = 0.22.0
+	RUN apt update && apt install -y curl
+	RUN curl -sSf https://rye-up.com/get | RYE_INSTALL_OPTION=--yes RYE_VERSION=$rye_version bash
+	RUN echo 'source "$HOME/.rye/env"' >> ~/.bashrc
+	RUN mkdir -p ~/.local/share/bash-completion/completions
+	RUN rye self completion > ~/.local/share/bash-completion/completions/rye.bash
+
+dev-rye:
+    FROM +base-rye
+    RUN apt install -y bash-completion vim
+    RUN --interactive /bin/bash --login
+
+dev:
+    FROM +conda
+    WORKDIR /work
+    ARG name = dev
+    ARG python_version = 3.11
+    ARG packages = python=$python_version conda-build
+    RUN conda create --name $name $packages --yes
+    RUN --interactive /bin/bash
+
 test:
     FROM +base-poetry
     RUN poetry init --no-interaction
