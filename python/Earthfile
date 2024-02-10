@@ -23,7 +23,7 @@ base-rye:
 	RUN mkdir -p ~/.local/share/bash-completion/completions
 	RUN rye self completion > ~/.local/share/bash-completion/completions/rye.bash
 
-dev-rye:
+DEV-RYE:
     FUNCTION
     ARG rye_version = 0.22.0
     BUILD +base-rye --rye_version=$rye_version
